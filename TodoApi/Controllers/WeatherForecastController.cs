@@ -31,7 +31,7 @@ namespace TodoApi.Controllers
             })
             .ToArray();
         }
-        /*
+        
         // 🚨 VULNERABLE ENDPOINT: Reads file contents from an unsafe user-supplied path
         [HttpGet("readfile")]
         public IActionResult GetFileContents([FromQuery] string path)
@@ -52,6 +52,6 @@ namespace TodoApi.Controllers
                 return BadRequest($"Error reading file: {ex.Message}");
             }
         }
-*/
+
     }
 }
