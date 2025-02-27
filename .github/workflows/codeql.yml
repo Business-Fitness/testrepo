@@ -91,9 +91,6 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
 
-    - name: Debug Available Files in testrepo
-      run: ls -R
-      
 
     # 🔹 Install Snyk CLI
     - name: Setup Snyk CLI
@@ -102,12 +99,12 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
   
     - name: Run Snyk Code Security Scan for .NET
-      run: snyk test --severity-threshold=medium
+      run: snyk test --file=TodoApi/TodoApi.sln --severity-threshold=medium
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     
     - name: Upload Snyk results to Monitor
-      run: snyk monitor
+      run: snyk monitor --file=TodoApi/TodoApi.sln
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     
