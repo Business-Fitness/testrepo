@@ -91,7 +91,9 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
 
-
+    - name: Debug Available Files in testrepo
+      run: ls -R
+      
 
     # 🔹 Install Snyk CLI
     - name: Setup Snyk CLI
