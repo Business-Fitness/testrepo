@@ -68,7 +68,8 @@ jobs:
         # Prefix the list here with "+" to use these queries and those in the config file.
 
         # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
-        queries: security-extended,security-and-quality
+        queries: +all
+        config-file: .github/codeql/codeql-config.yml # ✅ Uses custom config for more alerts
 
     # If the analyze step fails for one of the languages you are analyzing with
     # "We were unable to automatically build your code", modify the matrix above
@@ -90,6 +91,12 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
+
+    # ✅ DEBUG: Inspect SARIF results
+    - name: Inspect SARIF Results
+      run: |
+        echo "Checking CodeQL SARIF output..."
+        jq '.runs[].results' codeql-results.sarif
 
 
     # 🔹 Install Snyk CLI
