@@ -9,7 +9,7 @@
 # the `language` matrix defined below to confirm you have the correct set of
 # supported CodeQL languages.
 #
-name: "CodeQL Advanced"
+name: "CodeQL Advanced & Snyk Security Scans"
 
 on:
   push:
@@ -22,11 +22,6 @@ on:
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
-    # Runner size impacts CodeQL analysis time. To learn more, please see:
-    #   - https://gh.io/recommended-hardware-resources-for-running-codeql
-    #   - https://gh.io/supported-runners-and-hardware-resources
-    #   - https://gh.io/using-larger-runners (GitHub.com only)
-    # Consider using larger runners or machines with greater resources for possible analysis time improvements.
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     permissions:
       # required for all workflows
@@ -56,7 +51,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
     # Add any setup steps before running the `github/codeql-action/init` action.
     # This includes steps like installing compilers or runtimes (`actions/setup-node`
     # or others). This is typically only required for manual builds.
@@ -74,7 +68,8 @@ jobs:
         # Prefix the list here with "+" to use these queries and those in the config file.
 
         # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
-        queries: security-extended,security-and-quality
+        queries: security-and-quality,security-extended
+        config-file: .github/codeql/codeql-config.yml # ✅ Uses custom config for more alerts
 
     # If the analyze step fails for one of the languages you are analyzing with
     # "We were unable to automatically build your code", modify the matrix above
@@ -96,3 +91,21 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
+
+
+    # 🔹 Install Snyk CLI
+    - name: Setup Snyk CLI
+      uses: snyk/actions/setup@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+  
+    - name: Run Snyk Code Security Scan for .NET
+      run: snyk test --file=TodoApi/TodoApi.sln --severity-threshold=medium
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    
+    - name: Upload Snyk results to Monitor
+      run: snyk monitor --file=TodoApi/TodoApi.sln
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    

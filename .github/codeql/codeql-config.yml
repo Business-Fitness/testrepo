@@ -1,0 +1,16 @@
+disable-default-queries: false
+
+queries:
+  - uses: security-extended
+  - uses: security-and-quality
+  - uses: ./codeql-queries  # Include custom queries if needed
+
+query-filters:
+  - exclude:
+      deprecated: true  # Removes deprecated queries
+  - include:
+      problem.severity: error  # Ensure all "error" level issues show up
+  - include:
+      problem.severity: warning  # Include warnings
+  - include:
+      precision: low  # ✅ Adds more results, even if they might have false positives
