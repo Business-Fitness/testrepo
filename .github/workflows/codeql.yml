@@ -92,10 +92,16 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
 
+        
+    # debugging for sarif
+    - name: Debug CodeQL Analysis Step
+      run: |
+        echo "Checking if CodeQL SARIF file exists..."
+        ls -lah codeql-results.sarif || echo "❌ CodeQL SARIF file not found!"
+  
     - name: Debug CodeQL Output
       run: ls -lah . || echo "No files found in working directory"
       
-
     # ✅ DEBUG: Inspect SARIF results
     - name: Inspect SARIF Results
       run: |
