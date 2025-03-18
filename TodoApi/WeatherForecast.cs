@@ -2,6 +2,7 @@ namespace TodoApi;
 
 public class WeatherForecast
 {
+    public int Id { get; set; } // Primary Key
     public DateOnly Date { get; set; }
 
     public int TemperatureC { get; set; }
